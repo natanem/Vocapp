@@ -9,79 +9,58 @@ Living document: we update it as decisions are made.
 |---|---|
 | Platform | Web app, installable as a PWA (mobile-first layout) |
 | Audience | English learners (ESL) |
+| Vocabulary | Practical American English for work and daily life; no beginner words |
+| Word data | Hand-written list (original definitions and examples, so no licensing issues) |
+| Level check | Both: an optional placement quiz, or triage words yourself |
 | Data | Local-first: progress in IndexedDB, no backend or accounts in the MVP |
 | AI | Not in the MVP; revisit after the core loop works |
 
 ## Core idea (what we take from WordUp)
 
-1. **Frequency-ordered word map.** Words ranked by how useful they are
-   (most common first). The learner sees where they are on the map and what's next.
+1. **Usefulness-ordered word map.** Words in levels, most useful first.
+   The learner sees where they are on the map and what's next.
 2. **"Know it / Learn it" triage.** Swipe through new words; known ones are
-   skipped, unknown ones go into the learning queue. This quickly finds the
-   learner's level without a long test.
-3. **Rich word cards.** Definition, part of speech, pronunciation (audio via
-   the browser's speech synthesis), example sentences, and later images or clips.
-4. **Spaced repetition.** Reviews scheduled at growing intervals
-   (e.g. 1d → 3d → 7d → 14d → 30d) until a word is "mastered".
-5. **Varied quizzes.** Pick the definition, pick the word, fill the gap in a
-   sentence, listen and choose.
-6. **Motivation.** Daily goal, streaks, progress per word level.
+   skipped, unknown ones go into the learning queue.
+3. **Rich word cards.** Definition, part of speech, pronunciation (browser
+   speech), example sentence.
+4. **Spaced repetition.** Reviews at growing intervals (1d → 3d → 7d → 14d → 30d)
+   until a word is mastered.
+5. **Varied quizzes.** Pick the meaning, pick the word, fill the gap.
+6. **Motivation.** Daily goal, streaks, progress per level.
 
-## MVP scope (v0.1)
+## MVP (v0.1) — done
 
-- [ ] Word dataset: ~2,000–3,000 most frequent English words with definitions
-      and examples, bundled as static JSON (source: open data such as
-      WordNet / Wiktionary-derived lists, frequency from a public corpus list)
-- [ ] Onboarding: pick a daily goal; optional quick level check
-- [ ] Discover: swipe/triage new words (Know it / Learn it)
-- [ ] Word card with TTS pronunciation
-- [ ] Review session with spaced repetition and 2–3 quiz types
-- [ ] Word map: progress by frequency band (e.g. 1–500, 501–1000 …)
-- [ ] Stats: streak, words learning / mastered, today's progress
-- [ ] Installable PWA, works offline
+- [x] Word list: 300 curated workplace/daily-life words in 6 levels
+- [x] Onboarding: pick a daily goal, then choose the placement quiz or start from the beginning
+- [x] Placement quiz: 4 words per level, stops at the first level you don't pass
+- [x] Learn: swipe/triage new words (Know it / Learn it)
+- [x] Word card with pronunciation
+- [x] Review session with spaced repetition and 3 quiz types
+- [x] Word map: progress per level, word list with status changes
+- [x] Stats: streak, words learning / mastered / known, today's progress
+- [x] Installable PWA, works offline
 
-## Later (v0.2+)
+## Next up (proposed)
 
-- Search the dictionary and add any word to the queue
-- Personal word lists / import a word you met in the wild
-- Native-language translations (choose your language)
-- Images and short video/quote examples per word
+1. Grow the word list toward ~1,000 (phone & email phrases, customer service, healthcare, retail, tech, warehouse/trades)
+2. "I know it" spot-check: sometimes quiz a word right after you mark it known
+3. Listening quiz (hear the word, pick it) and typing quiz
+4. Search the whole list from the Word Map
+5. Deploy (GitHub Pages / Netlify) so it can be installed on a phone
+
+## Later
+
+- Add your own words / personal lists
+- Native-language translations
 - Accounts + cloud sync (e.g. Supabase)
-- AI: personalized example sentences, mini stories with your learning words,
-  explain-the-difference-between-two-words
-- Leaderboards / social challenges
+- AI: personalized examples, mini stories using your words, "what's the difference between X and Y"
+- Leaderboards / challenges
 
-## Proposed tech stack
+## Tech stack
 
-- **Vite + React + TypeScript** — fast dev loop, simple static build
-- **Tailwind CSS** — quick, consistent mobile UI
-- **Dexie (IndexedDB)** — local progress storage
-- **vite-plugin-pwa** — offline + installable
-- **Vitest** — unit tests for the scheduler and quiz logic
-- Hosting: any static host (Vercel / Netlify / GitHub Pages)
-
-## Data model (draft)
-
-```ts
-Word      { id, lemma, rank, pos, definition, examples[], level }
-Progress  { wordId, status: 'new'|'known'|'learning'|'mastered',
-            step, dueAt, lastReviewedAt, correct, wrong }
-DayLog    { date, discovered, reviewed, goalMet }
-Settings  { dailyGoal, voice }
-```
-
-## Build order
-
-1. Scaffold project, tooling, CI-free tests (this repo)
-2. Word dataset pipeline + bundled JSON
-3. Storage layer + spaced-repetition scheduler (with tests)
-4. Discover (triage) screen + word card
-5. Review/quiz screen
-6. Word map + stats screen
-7. PWA polish, offline, deploy
+Vite + React + TypeScript, Tailwind CSS, Dexie (IndexedDB), vite-plugin-pwa, Vitest.
 
 ## Open questions
 
-- Which open word dataset do we trust for definitions/examples (licensing)?
-- Level check at onboarding, or just let triage find the level?
-- Do we want a distinct visual identity / name beyond "Vocapp"?
+- Which industries or job types should the next levels focus on?
+- Distinct name and visual identity beyond "Vocapp"?
