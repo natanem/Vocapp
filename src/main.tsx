@@ -4,7 +4,8 @@ import { registerSW } from 'virtual:pwa-register'
 import App from './App'
 import './index.css'
 
-registerSW({ immediate: true })
+// Offline support; some hosts (like embedded previews) don't allow it, which is fine.
+registerSW({ immediate: true, onRegisterError: () => {} })
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
